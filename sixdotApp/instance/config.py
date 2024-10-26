@@ -7,10 +7,10 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    env_name: str = "local"
+    env_name: str = "Local"
     base_url: str = "http://localhost:8000"
-    database_url: str = "postgresql://username:password@localhost/sixdot_db"
-    test_database_url: str = "postgresql://username:password@localhost/sixdot_db"
+    supabase_url: str = ""
+    supabase_key: str = ""
 
     model_config = SettingsConfigDict(env_file=".env")
 
@@ -19,7 +19,6 @@ def get_settings() -> Settings:
     settings = Settings()
     print(f"Loading settings for: {settings.env_name}")
     print(f"BASE_URL: ", settings.base_url)
-    # print(f"DATABASE_URL: {settings.database_url}")
     return settings
 
 # print("ENV_NAME: ", get_settings().env_name)
