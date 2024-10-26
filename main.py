@@ -1,8 +1,8 @@
 from fastapi import FastAPI, security
 from fastapi.middleware.cors import CORSMiddleware
-from sixdotApp.routers.auth_route import auth_route
-from sixdotApp.routers.wallets_route import wallets
-from sixdotApp.routers.security_route import security_route
+from .sixdotApp.routers.auth_route import auth_route
+from .sixdotApp.routers.wallets_route import wallets
+from .sixdotApp.routers.security_route import security_route
 
 # initialize FastAPI app instance
 app = FastAPI(title="Sixdot Wallet", description="Welcome to Sixdot Wallet")
