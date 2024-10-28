@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     base_url: str = "http://localhost:8000"
     supabase_url: str = ""
     supabase_key: str = ""
+    kmd_addresss: str = "http://localhost:4002"
+    kmd_token: str = ""
 
     model_config = SettingsConfigDict(env_file=".env")
 
