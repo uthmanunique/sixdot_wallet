@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request
 # from cachetools import TTLCache, cached
-from .. import schemas, models, dependencies, database
+from .. import schemas, models, dependencies
 from ..instance.config import get_settings
 from algosdk import kmd, wallet, account, mnemonic
+# from algokit_utils import get_algod_client, get_kmd_client_from_algod_client
 
 
 auth_route = APIRouter()
@@ -44,6 +45,7 @@ async def import_wallet(wallet_name: str, wallet_pin: str, passphrase: dict):
     kmd_token = get_settings().kmd_token
     kmd_client = kmd.KMDClient(kmd_token=kmd_token, kmd_address=kmd_address)
 
+
     # get wallet handle
     wallet_id = kmd_client.list_wallets()[0]["id"]
     wallet_handle = kmd_client.init_wallet_handle(wallet_id, wallet_pin)
@@ -60,13 +62,13 @@ async def import_wallet(wallet_name: str, wallet_pin: str, passphrase: dict):
     # hash wallet_pin
     hashed_wallet_pin = dependencies.hash_password(wallet_pin)
 
-    # store user data
-    record = {
-        "username": wallet_name,
-        "wallet_address": imported_account,
-        "password": hashed_wallet_pin
-    }
-    database.create_new_user(record=record, table_name="users")
+    # # store user data
+    # record = {
+    #     "username": wallet_name,
+    #     "wallet_address": imported_account,
+    #     "password": hashed_wallet_pin
+    # }
+    # database.create_new_user(record=record, table_name="users")
 
     return {
         "message": "Wallet imported successfully",

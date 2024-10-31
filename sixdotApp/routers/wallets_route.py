@@ -13,6 +13,13 @@ algod_address = get_settings().algod_address
 algod_token = get_settings().algod_token
 algod_client = algod.AlgodClient(algod_token, algod_address)
 
+# Get the node status
+# try:
+#     status = algod_client.status()
+#     print("Node status:", status)
+# except Exception as e:
+#     print(f"Failed to get node status: {e}")
+
 
 
 # fund wallet account
@@ -22,7 +29,8 @@ async def wallet_fund():
     Fund your wallet: Visit the dispencer url
     """
     return {
-        "message": "To fund your wallet visit the dispencer url"
+        "message": "To fund your wallet visit the dispencer url below",
+        "algorand dispencer": "https://bank.testnet.algorand.network/"
     }
 
 # get wallet account balance
@@ -33,22 +41,22 @@ async def wallet_balance(wallet_address: str):
         "Account balance": f"{account_info.get('amount')} microAlgos"
     }
 
-# wallet/send_crypto/
-@wallets.post("/wallet/send_crypto")
-async def send_crypto():
-    """
-    Make payment transaction
-    """
-    # grab suggested params from algod using client
-    # includes things like suggested fee and first/last valid rounds
-    params = algod_client.suggested_params()
-    unsigned_txn = transaction.PaymentTxn(
-        sender=address,
-        sp=params,
-        receiver=address2,
-        amt=1000000,
-        note=b"hello world",
-    )
+# # wallet/send_crypto/
+# @wallets.post("/wallet/send_crypto")
+# async def send_crypto():
+#     """
+#     Make payment transaction
+#     """
+#     # grab suggested params from algod using client
+#     # includes things like suggested fee and first/last valid rounds
+#     params = algod_client.suggested_params()
+#     unsigned_txn = transaction.PaymentTxn(
+#         sender=address,
+#         sp=params,
+#         receiver=address2,
+#         amt=1000000,
+#         note=b"hello world",
+#     )
 
 # wallets_route.py: - wallet/receive_crypto/
 #                   - wallet/view_crypto_balance/

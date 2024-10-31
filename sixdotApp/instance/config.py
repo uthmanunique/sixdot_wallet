@@ -12,13 +12,12 @@ class Settings(BaseSettings):
 
     supabase_url: str = ""
     supabase_key: str = ""
-    
+
     kmd_address: str = ""
     kmd_token: str = ""
-    
+
     algod_address: str = ""
     algod_token: str = "a" * 64
-
 
     model_config = SettingsConfigDict(env_file=".env")
 
