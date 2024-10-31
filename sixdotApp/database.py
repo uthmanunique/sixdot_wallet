@@ -7,7 +7,7 @@ key: str = get_settings().supabase_key
 
 supabase: Client = create_client(url, key)
 
-def create_a_record(table_name: str, record: dict):
+def create_new_user(record: dict[str: str], table_name: str = "users"):
     response = (
         supabase.table(table_name).insert(record).execute()
     )
