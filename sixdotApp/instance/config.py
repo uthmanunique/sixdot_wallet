@@ -9,10 +9,15 @@ from functools import lru_cache
 class Settings(BaseSettings):
     env_name: str = "Local"
     base_url: str = "http://localhost:8000"
+
     supabase_url: str = ""
     supabase_key: str = ""
-    kmd_address: str = "http://localhost:4002"
+
+    kmd_address: str = ""
     kmd_token: str = ""
+
+    algod_address: str = ""
+    algod_token: str = "a" * 64
 
     model_config = SettingsConfigDict(env_file=".env")
 
