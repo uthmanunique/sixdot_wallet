@@ -10,32 +10,11 @@ auth_route = APIRouter()
 # cache = TTLCache(maxsize=100, ttl=300)
 
 
-@auth_route.post("/generate_account")
-async def generate_account():
-    """Generate an account and returns wallet address and passphrase
-
-    Returns:
-        dict: json response of wallet information
-    """
-    # generate an account
-    private_key, address = account.generate_account()
-
-    # Get wallet passphrase
-    passphrase = mnemonic.from_private_key(private_key)
-    passphrase = passphrase.split(" ")
-    indices =range(1, len(passphrase)+1, 1)
-    seed_passphrase = dict(zip(indices, passphrase))
-
-    return {
-        "message": "Wallet created successfully",
-        "wallet address": address,
-        "passphrase": seed_passphrase
-    }
 
 # create wallet
-@auth_route.post("/import_wallet")
-async def import_wallet(wallet_name: str, wallet_pin: str, passphrase: dict):
-    """Imports wallet and returns username and wallet address
+@auth_route.post("/create_wallet")
+async def create_wallet(wallet_name: str, wallet_password: str):
+    """Create KMD wallet
 
     Returns:
         dict: json response of wallet information
@@ -46,21 +25,20 @@ async def import_wallet(wallet_name: str, wallet_pin: str, passphrase: dict):
     kmd_client = kmd.KMDClient(kmd_token=kmd_token, kmd_address=kmd_address)
 
 
-    # get wallet handle
-    wallet_id = kmd_client.list_wallets()[0]["id"]
-    wallet_handle = kmd_client.init_wallet_handle(wallet_id, wallet_pin)
+    # create a wallet object which, if not available yet, also creates the wallet in the KMD
+    wlt = wallet.Wallet(wallet_name, wallet_password, kmd_client)
 
-    # convert mnemonic to private key
-    private_key = mnemonic.to_private_key(" ".join(passphrase.values()))
+    # get wallet information
+    info = wlt.info()
+    wallet_name = info['wallet']['name']
 
-    # import account to wallet in KMD
-    imported_account = kmd_client.import_key(wallet_handle, private_key)
+    backup = wlt.get_mnemonic()
+    print(f"mnemonic for master derivation key: {backup}")
 
-    # release wallet handle
-    kmd_client.release_wallet_handle(wallet_handle)
-
-    # hash wallet_pin
-    hashed_wallet_pin = dependencies.hash_password(wallet_pin)
+    # CREATE_ACCOUNT
+    # create an account using the wallet object
+    address = wlt.generate_key()
+    print(f"New account: {address}")
 
     # # store user data
     # record = {
@@ -71,7 +49,8 @@ async def import_wallet(wallet_name: str, wallet_pin: str, passphrase: dict):
     # database.create_new_user(record=record, table_name="users")
 
     return {
-        "message": "Wallet imported successfully",
-        "username": wallet_name,
-        "wallet address": imported_account
+        "message": "Wallet created successfully",
+        "Wallet name": wallet_name,
+        "Wallet Derivation Key/Mnemonic": backup,
+        "account address": address
     }
