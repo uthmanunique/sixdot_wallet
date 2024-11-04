@@ -67,37 +67,37 @@ async def unsigned_txn(sender_address: str, receiver_address: str, amount: int, 
     )
     return unsigned_txn
 
-# sign transaction
-@wallets.post("/wallet/sign_txn")
-async def sign_txn(wallet_name, wallet_password, wallet_address, unsigned_txn: PaymentTxn):
+# # sign transaction
+# @wallets.post("/wallet/sign_txn")
+# async def sign_txn(wallet_name, wallet_password, wallet_address, unsigned_txn: PaymentTxn):
 
-    wallet_name = wallet_name
-    wallet_password = wallet_password
+#     wallet_name = wallet_name
+#     wallet_password = wallet_password
 
-    # Get the wallet ID
-    kmd_wallets = kmd_client.list_wallets()
-    wallet_id = next(wallet for wallet in kmd_wallets if wallet["name"] == wallet_name)["id"]
+#     # Get the wallet ID
+#     kmd_wallets = kmd_client.list_wallets()
+#     wallet_id = next(wallet for wallet in kmd_wallets if wallet["name"] == wallet_name)["id"]
 
-    # Get the wallet handle
-    wallet_handle = kmd_client.init_wallet_handle(wallet_id, wallet_password)
+#     # Get the wallet handle
+#     wallet_handle = kmd_client.init_wallet_handle(wallet_id, wallet_password)
 
-    # get private key
-    address = wallet_address
-    private_key = kmd_client.export_key(wallet_handle, wallet_password, address)
+#     # get private key
+#     address = wallet_address
+#     private_key = kmd_client.export_key(wallet_handle, wallet_password, address)
 
-    # sign transaction
-    signed_txn = unsigned_txn.sign(private_key)
+#     # sign transaction
+#     signed_txn = unsigned_txn.sign(private_key)
 
-    # submit transaction
-    txid = algod_client.send_transaction(signed_txn)
-    print("Successfully submitted transaction with txID:", txid)
+#     # submit transaction
+#     txid = algod_client.send_transaction(signed_txn)
+#     print("Successfully submitted transaction with txID:", txid)
 
-    # Wait for confirmation
-    txn_result = transaction.wait_for_confirmation(algod_client, txid, 4)
-    # print("Transaction information:", json.dumps(txn_result, indent=4))
-    return {
-        "Transaction information": json.dumps(txn_result, indent=4)
-    }
+#     # Wait for confirmation
+#     txn_result = transaction.wait_for_confirmation(algod_client, txid, 4)
+#     # print("Transaction information:", json.dumps(txn_result, indent=4))
+#     return {
+#         "Transaction information": json.dumps(txn_result, indent=4)
+#     }
 
 
 # wallets_route.py: - wallet/receive_crypto/
